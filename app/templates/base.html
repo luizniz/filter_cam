@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FilterCam - Monitor de Câmera IP em Tempo Real com Filtros Avançados">
+    <title>{% block title %}FilterCam - Monitor de Câmera{% endblock %}</title>
+
+    <!-- CSS Principal -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/canvas.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23000'/><circle cx='50' cy='50' r='35' fill='%23fff'/><circle cx='50' cy='50' r='20' fill='%23000'/></svg>">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div id="app" class="app-container">
+        {% block content %}
+        
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="app-title">FilterCam</h1>
+                <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle sidebar">
+                    <svg viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="currentColor" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Camera Info Panel -->
+            <div class="info-panel">
+                <div class="info-section">
+                    <h3 class="info-title">Status da Câmera</h3>
+                    <div class="info-content">
+                        <div class="info-item">
+                            <span class="info-label">Status:</span>
+                            <span id="camera-status" class="info-value disconnected">Desconectado</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">IP:</span>
+                            <span id="camera-ip" class="info-value">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Resolução:</span>
+                            <span id="camera-resolution" class="info-value">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">FPS:</span>
+                            <span id="camera-fps" class="info-value">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Latência:</span>
+                            <span id="camera-latency" class="info-value">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Conectado há:</span>
+                            <span id="camera-uptime" class="info-value">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters Section -->
+            <div class="filters-section">
+                <h3 class="section-title">Filtros</h3>
+                <div class="filters-list" id="filters-container">
+                    <!-- Filtros serão adicionados dinamicamente pelo JavaScript -->
+                </div>
+                <button id="reset-filters" class="btn btn-secondary btn-block">Reiniciar Filtros</button>
+            </div>
+
+            <!-- Controls Section -->
+            <div class="controls-section">
+                <h3 class="section-title">Controles</h3>
+                <div class="controls-grid">
+                    <button id="btn-play-pause" class="btn btn-primary" title="Play/Pausa">
+                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+                    </button>
+                    <button id="btn-fullscreen" class="btn btn-primary" title="Tela Cheia">
+                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                    </button>
+                    <button id="btn-snapshot" class="btn btn-primary" title="Capturar Tela">
+                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                    </button>
+                    <button id="btn-reconnect" class="btn btn-primary" title="Reconectar">
+                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Transform Controls -->
+            <div class="transform-section">
+                <h3 class="section-title">Transformações</h3>
+                
+                <div class="control-group">
+                    <label for="zoom-slider" class="control-label">Zoom</label>
+                    <div class="slider-container">
+                        <input type="range" id="zoom-slider" class="slider" min="0.5" max="3" step="0.1" value="1" title="Zoom">
+                        <span class="slider-value" id="zoom-value">100%</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label for="rotation-slider" class="control-label">Rotação</label>
+                    <div class="slider-container">
+                        <input type="range" id="rotation-slider" class="slider" min="0" max="360" step="1" value="0" title="Rotação">
+                        <span class="slider-value" id="rotation-value">0°</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">Espelhar</label>
+                    <div class="button-group">
+                        <button id="btn-flip-horizontal" class="btn btn-secondary btn-sm" title="Espelhar Horizontalmente">H</button>
+                        <button id="btn-flip-vertical" class="btn btn-secondary btn-sm" title="Espelhar Verticalmente">V</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Snapshots History -->
+            <div class="history-section">
+                <h3 class="section-title">Capturas Recentes</h3>
+                <div class="snapshots-list" id="snapshots-container">
+                    <!-- Snapshots serão adicionados aqui -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="canvas-container">
+                <video id="video-stream" class="hidden-video" crossorigin="anonymous"></video>
+                <canvas id="canvas" class="canvas-element"></canvas>
+                <div id="loading-indicator" class="loading-indicator hidden">
+                    <div class="spinner"></div>
+                    <p>Conectando à câmera...</p>
+                </div>
+                <div id="error-message" class="error-message hidden">
+                    <p id="error-text">Erro ao conectar</p>
+                    <button id="error-retry" class="btn btn-primary">Reconectar</button>
+                </div>
+            </div>
+        </main>
+
+        {% endblock %}
+    </div>
+
+    <!-- JavaScript -->
+    <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
