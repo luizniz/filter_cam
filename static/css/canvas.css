@@ -1,0 +1,125 @@
+/**
+ * Estilos do Canvas - FilterCam
+ * 
+ * Estilos específicos para a área de renderização do canvas,
+ * incluindo controles e indicadores.
+ */
+
+.canvas-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-color: var(--color-bg-secondary);
+  overflow: hidden;
+}
+
+/* Canvas Principal */
+.canvas-element {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  cursor: grab;
+  transition: opacity var(--transition-fast);
+}
+
+.canvas-element:active {
+  cursor: grabbing;
+}
+
+.canvas-element.fullscreen {
+  width: 100%;
+  height: 100%;
+}
+
+/* Vídeo Oculto */
+.hidden-video {
+  display: none;
+}
+
+/* Indicador de Carregamento */
+.loading-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+  z-index: var(--z-overlay);
+}
+
+.loading-indicator p {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+}
+
+.loading-indicator.hidden {
+  display: none;
+}
+
+/* Spinner de Carregamento */
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--color-bg-tertiary);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Mensagem de Erro */
+.error-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--color-error-bg);
+  border: 1px solid var(--color-error);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg) var(--space-xl);
+  text-align: center;
+  max-width: 400px;
+  z-index: var(--z-overlay);
+  animation: slideUp var(--transition-normal);
+}
+
+.error-message p {
+  color: var(--color-error);
+  margin-bottom: var(--space-md);
+}
+
+.error-message .btn {
+  margin-top: var(--space-md);
+}
+
+.error-message.hidden {
+  display: none;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -40%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Overlay para Tela Cheia */
+.canvas-element.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--z-modal);
+}

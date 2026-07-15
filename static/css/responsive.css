@@ -1,0 +1,203 @@
+/**
+ * Estilos Responsivos - FilterCam
+ * 
+ * Adaptações para diferentes tamanhos de tela mantendo
+ * a experiência minimalista e elegante.
+ */
+
+/* Tablets - 768px até 1024px */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 280px;
+  }
+}
+
+/* Tablets pequenos - até 768px */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    transform: translateX(-100%);
+    border-right: none;
+    box-shadow: var(--shadow-xl);
+    z-index: var(--z-modal);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .app-container {
+    flex-direction: column;
+  }
+
+  .main-content {
+    flex: 1;
+    width: 100%;
+  }
+
+  .canvas-container {
+    aspect-ratio: 16 / 9;
+  }
+
+  .controls-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Celulares - até 480px */
+@media (max-width: 480px) {
+  :root {
+    --space-md: 0.75rem;
+    --space-lg: 1rem;
+    --space-xl: 1.5rem;
+  }
+
+  body {
+    font-size: var(--font-size-sm);
+  }
+
+  h1 {
+    font-size: var(--font-size-xl);
+  }
+
+  h2 {
+    font-size: var(--font-size-lg);
+  }
+
+  h3 {
+    font-size: var(--font-size-base);
+  }
+
+  .sidebar {
+    width: 100%;
+  }
+
+  .sidebar-header {
+    padding: var(--space-md);
+  }
+
+  .app-title {
+    font-size: var(--font-size-xl);
+  }
+
+  .sidebar > div {
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .btn {
+    padding: var(--space-xs) var(--space-sm);
+    min-height: 32px;
+    font-size: var(--font-size-xs);
+  }
+
+  .btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .controls-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-xs);
+  }
+
+  .snapshots-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .error-message {
+    margin: var(--space-md);
+    max-width: none;
+  }
+
+  .info-item {
+    font-size: var(--font-size-xs);
+  }
+
+  .control-label {
+    font-size: var(--font-size-xs);
+  }
+
+  .slider-value {
+    min-width: 35px;
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* Suporte para notch (safe-area-inset) */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+    padding-top: max(0px, env(safe-area-inset-top));
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+}
+
+/* Modo Retrato */
+@media (orientation: portrait) {
+  .canvas-container {
+    aspect-ratio: auto;
+  }
+}
+
+/* Modo Paisagem */
+@media (orientation: landscape) {
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 280px;
+      position: relative;
+      transform: translateX(0);
+      height: 100vh;
+    }
+
+    .app-container {
+      flex-direction: row;
+    }
+
+    .main-content {
+      flex: 1;
+    }
+  }
+}
+
+/* Redução de Movimento */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Modo Alto Contraste */
+@media (prefers-contrast: more) {
+  :root {
+    --color-border: #808080;
+    --color-border-light: #a9a9a9;
+  }
+
+  .btn-secondary {
+    border-width: 2px;
+  }
+}
+
+/* Modo Economia de Dados */
+@media (prefers-reduced-data: reduce) {
+  * {
+    background-attachment: scroll !important;
+  }
+
+  img {
+    opacity: 0.8;
+  }
+}
